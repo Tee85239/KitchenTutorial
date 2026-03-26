@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35a7135a6cf1e87478b816fc574b9377, type: 3}
+  m_Name: RawtoCooked
+  m_EditorClassIdentifier: Assembly-CSharp::CookingRecipeSO
+  input: {fileID: 11400000, guid: 28321d35e00f91c40b5eb846be28bc6b, type: 2}
+  output: {fileID: 11400000, guid: 9edc8b027e521cc4981acca665a836e0, type: 2}
+  cookProgressMax: 3

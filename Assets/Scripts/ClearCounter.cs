@@ -2,71 +2,68 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ClearCounter : MonoBehaviour
+public class ClearCounter : BaseCounter
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField]
     private KitchenObjectsSO kitchenObjectSO;
-    [SerializeField]
-    private Transform counterTopPoint;
-    private KitchenObject kitchenObject;
-    [SerializeField]
-    private ClearCounter secondClearCounter;
+    
+  
 
-    [SerializeField]
-    private bool test;
-
-    private void Update()
+    
+    public override void Interact(Player player)
     {
-        if (test && Input.GetKeyDown(KeyCode.T))
+        if (!HasKitchenObject())
         {
-            if(kitchenObject != null)
+            //Has no kitchen object
+            if (player.HasKitchenObject())
             {
-                kitchenObject.SetClearCounter(secondClearCounter);
-               // Debug.Log(kitchenObject.GetClearCounter());
+                player.GetKitchenObject().SetKitchenObjectParent(this);
             }
-        }
-    }
-    public void Interact()
-    {
-        if (kitchenObject == null)
-        {
-
-            Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefab, counterTopPoint);
-            kitchenObjectTransform.GetComponent<KitchenObject>().SetClearCounter(this);
-           // kitchenObjectTransform.localPosition = Vector3.zero;
-           // kitchenObject = kitchenObjectTransform.GetComponent<KitchenObject>();
-           // kitchenObject.SetClearCounter(this);
+            else
+            {
+                //player has nothing
+            }
 
         }
         else {
-            Debug.Log(kitchenObject.GetClearCounter());
-        }
+            //Has Kitchen object
+            if (player.HasKitchenObject()) 
+            {
+                //Player has object
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
+                {
+                    //Player has plate
 
+
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        GetKitchenObject().DestroySelf();
+                    }
+
+                }
+                else
+                {
+                    //Player not have plate
+                    if (GetKitchenObject().TryGetPlate(out plateKitchenObject))
+                    {
+                        //Counter holding plate
+                        if (plateKitchenObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            player.GetKitchenObject().DestroySelf();
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                GetKitchenObject().SetKitchenObjectParent(player);
+            }
+        
+        }
        
     }
 
-    public Transform GetKitchenFollowTransform()
-    {
-        return counterTopPoint;
-    }
-
-    public void SetKitchenObject (KitchenObject kitchenObject)
-    {
-        this.kitchenObject = kitchenObject;
-    }
-    public KitchenObject GetKitchenObject()
-    {
-        return kitchenObject;
-    }
-
-    public void ClearKitchenObject()
-    {
-        kitchenObject = null;
-    }
-
-    public bool HasKitchenObject()
-    {
-        return kitchenObject != null;
-    }
+   
 }

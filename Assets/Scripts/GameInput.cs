@@ -8,6 +8,7 @@ public class GameInput : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private PlayerInput playerInput;
     public event EventHandler OnInteractAction;
+    public event EventHandler OnInteractAltAction;
 
     private void Awake()
     {
@@ -15,9 +16,14 @@ public class GameInput : MonoBehaviour
         playerInput.Player.Enable();
 
         playerInput.Player.Interact.performed += Interact_performed;
+        playerInput.Player.InteractAlt.performed += InteractAlt_performed;
     }
 
-  
+    private void InteractAlt_performed(InputAction.CallbackContext obj)
+    {
+        OnInteractAltAction?.Invoke(this,EventArgs.Empty);
+    }
+
     private void Interact_performed(InputAction.CallbackContext obj)
     {
         OnInteractAction?.Invoke(this,EventArgs.Empty);

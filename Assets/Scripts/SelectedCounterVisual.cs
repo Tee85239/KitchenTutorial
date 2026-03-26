@@ -5,9 +5,9 @@ public class Selected : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     [SerializeField]
-    private ClearCounter clearCounter;
+    private BaseCounter baseCounter;
     [SerializeField]
-    private GameObject selectedGameObject;
+    private GameObject[] selectedGameObjectArray;
     private void Start()
     {
         Player.Instance.OnSelectedCounterChange += Instance_OnSelectedCounterChange;
@@ -15,7 +15,7 @@ public class Selected : MonoBehaviour
 
     private void Instance_OnSelectedCounterChange(object sender, Player.OnSelectedCounterChangeEventArgs e)
     {
-        if (e.selectedCounter == clearCounter) {
+        if (e.selectedCounter == baseCounter) {
             Show();
         }
         else
@@ -34,10 +34,16 @@ public class Selected : MonoBehaviour
 
     private void Show()
     {
-        selectedGameObject.SetActive(true);
+        foreach (GameObject visualGameObject in selectedGameObjectArray)
+        {
+            visualGameObject.SetActive(true);
+        }
     }
     private void Hide() 
     {
-        selectedGameObject.SetActive(false);
+        foreach (GameObject visualGameObject in selectedGameObjectArray)
+        {
+            visualGameObject.SetActive(false);
+        }
     }
 }
