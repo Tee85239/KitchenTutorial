@@ -8,6 +8,8 @@ public class Recipemanager : MonoBehaviour
 
     public event EventHandler OnRecipeSpawn;
     public event EventHandler OnRecipeComplete;
+    public event EventHandler OnRecipeSuccess;
+    public event EventHandler OnRecipeFailed;
 
     public static Recipemanager Instance { get; private set; }
 
@@ -19,6 +21,7 @@ public class Recipemanager : MonoBehaviour
     private float recipeSpawnTimer;
     private float recipeSpawnTimeMax = 5f;
     private int recipeMaxCount = 3;
+    private int recipeSuccess = 0;
 
 
     private void Awake()
@@ -93,7 +96,9 @@ public class Recipemanager : MonoBehaviour
                     //Delivered correct recipe
                     Debug.Log("Delivered correct recipe");
                     waitingRecipeSOList.RemoveAt(i);
+                    recipeSuccess++;
                     OnRecipeComplete?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
                     return;
                 }
             }
@@ -101,10 +106,16 @@ public class Recipemanager : MonoBehaviour
         }
         //No matches found
         Debug.Log("Failed");
+        OnRecipeFailed?.Invoke(this, EventArgs.Empty);
 
     }
 
     public List<RecipeSO> GetRecipeSOList() { 
         return waitingRecipeSOList;
+    }
+
+    public int GetRecipeSucessCount() 
+    {
+        return recipeSuccess;
     }
 }

@@ -18,6 +18,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private Transform kitchenObjectHoldPoint;
 
     public event EventHandler<OnSelectedCounterChangeEventArgs> OnSelectedCounterChange;
+    public event EventHandler objectGetSound;
     public class OnSelectedCounterChangeEventArgs : EventArgs
     {
         public BaseCounter selectedCounter;
@@ -35,7 +36,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Input_OnInteractAltAction(object sender, EventArgs e)
     {
-        if (selectedCounter != null)
+        if (!GameHandler.Instance.isGamePlaying())
+            return;
+            if (selectedCounter != null)
         {
             selectedCounter.InteractAlt(this);
         }
@@ -57,7 +60,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Input_OnInteractAction(object sender, System.EventArgs e)
     {
-
+        if(!GameHandler.Instance.isGamePlaying() )
+            return;
         if (selectedCounter != null)
         {
             selectedCounter.Interact(this);
@@ -170,6 +174,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;
+        if(kitchenObject != null)
+        {
+            objectGetSound?.Invoke(this, EventArgs.Empty);
+        }
     }
     public KitchenObject GetKitchenObject()
     {

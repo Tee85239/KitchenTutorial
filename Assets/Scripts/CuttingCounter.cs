@@ -3,7 +3,7 @@ using System;
 
 public class CuttingCounter : BaseCounter, IProgressBar
 {
-
+    public static event EventHandler onAnyCut;
     public event EventHandler<IProgressBar.OnProgressChangedEventArgs> onProgressChange;
   
 
@@ -81,6 +81,7 @@ public class CuttingCounter : BaseCounter, IProgressBar
         {
             //There is kitchen object
             cutProgress++;
+            onAnyCut?.Invoke(this, EventArgs.Empty);
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
             onProgressChange?.Invoke(this, new IProgressBar.OnProgressChangedEventArgs()
             {
