@@ -38,7 +38,7 @@ public class Recipemanager : MonoBehaviour
         {
             recipeSpawnTimer = recipeSpawnTimeMax;
 
-            if (waitingRecipeSOList.Count < recipeMaxCount)
+            if (GameHandler.Instance.isGamePlaying() && waitingRecipeSOList.Count < recipeMaxCount)
             {
                 RecipeSO waitingRecipeSo = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
                 Debug.Log(waitingRecipeSo.recipeName);

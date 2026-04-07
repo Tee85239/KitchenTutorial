@@ -7,11 +7,20 @@ public class CountDownUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField]
     TextMeshProUGUI CountDownText;
+    private int prevCountdownNum;
+    private const string NUMBER_POP_UP = "NumberPopup";
+
+    private Animator animator;
     private void Start()
     {
         GameHandler.Instance.onStateChange += GameManager_onStateChange;
         Hide();
         
+    }
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
     }
 
     private void GameManager_onStateChange(object sender, System.EventArgs e)
@@ -38,6 +47,15 @@ public class CountDownUI : MonoBehaviour
 
     private void Update()
     {
-       CountDownText.text = Mathf.Ceil(GameHandler.Instance.GetCountDownTimer()).ToString();
+        int countdownNum = Mathf.CeilToInt(GameHandler.Instance.GetCountDownTimer());
+       CountDownText.text = countdownNum.ToString();
+
+        if(prevCountdownNum != countdownNum)
+        {
+            prevCountdownNum = countdownNum;
+            animator.SetTrigger(NUMBER_POP_UP);
+            SoundManager.Instance.PlayCountDown();
+        }
+        
     }
 }

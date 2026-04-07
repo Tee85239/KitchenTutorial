@@ -5,6 +5,8 @@ public class SoundManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField]
     private AudioSO audioSO;
+    private float volume = 1f;
+    private const string PlayerPrefsSoundEffects = "SoundEffectsVolume";
 
     public static SoundManager Instance { get; private set; }
    
@@ -12,6 +14,7 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+       volume = PlayerPrefs.GetFloat(PlayerPrefsSoundEffects, 1f);
         Instance = this;
     }
 
@@ -61,21 +64,52 @@ public class SoundManager : MonoBehaviour
         PlaySound(audioSO.deliveryfail, deliveryCounter.transform.position);
     }
 
-    private void PlaySound(AudioClip audioClip, Vector3 position, float volume = 15f)
+    private void PlaySound(AudioClip audioClip, Vector3 position, float volumeMultiplier  = 15f)
     {
-        AudioSource.PlayClipAtPoint(audioClip, position, volume);
+        AudioSource.PlayClipAtPoint(audioClip, position, volumeMultiplier * volume );
 
     }
 
-    private void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volume = 15f)
+    private void PlaySound(AudioClip[] audioClipArray, Vector3 position, float volumeMultiplier = 15f)
     {
-        PlaySound(audioClipArray[Random.Range(0, audioClipArray.Length)], position, volume);
+        PlaySound(audioClipArray[Random.Range(0, audioClipArray.Length)], position, volumeMultiplier * volume);
 
     }
 
     public void PlayPlayerFootsteps(Vector3 pos, float volume)
     {
         PlaySound(audioSO.footsteps, pos);
+    }
+
+    public void PlayCountDown()
+    {
+        PlaySound(audioSO.warning, Vector3.zero);
+    }
+
+    public void PlayWarningSound(Vector3 position)
+    {
+        PlaySound(audioSO.warning, position);
+    }
+
+
+
+
+    public void ChangeVolume()
+    {
+        volume += .1f;
+
+        if (volume > 1f) {
+            volume = 0f;
+        }
+
+        PlayerPrefs.SetFloat(PlayerPrefsSoundEffects, volume);
+        PlayerPrefs.Save();
+
+    }
+
+    public float GetVolume() { 
+    
+        return volume;
     }
 
 

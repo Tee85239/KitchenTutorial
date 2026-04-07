@@ -5,14 +5,18 @@ using UnityEngine;
 public class GameHandler : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private float waitingToStartTimer = 1f;
+   // private float waitingToStartTimer = 1f;
     private float countingToEndTimer = 3f;
    private float gameplayToStart;
-    private float gameplayToStartMax = 10f;
+    private float gameplayToStartMax = 30f;
     private State state;
+    private bool isPaused = false;
 
     public static GameHandler Instance { get; private set; }
     public event EventHandler onStateChange;
+    public event EventHandler OnGamePaused;
+    public event EventHandler OnGameUnpaused;
+
 
     private enum State
     {
@@ -24,7 +28,25 @@ public class GameHandler : MonoBehaviour
 
     }
 
-   
+    private void Start()
+    {
+        GameInput.Instance.OnPause += GameInput_OnPause;
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+    }
+
+    private void GameInput_OnInteractAction(object sender, EventArgs e)
+    {
+        if (state == State.WaitingToStart) {
+        state = State.CountingToStart;
+        onStateChange?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void GameInput_OnPause(object sender, EventArgs e)
+    {
+        PauseGame();
+    }
+
     private void Awake()
     {
         Instance = this;
@@ -39,12 +61,7 @@ public class GameHandler : MonoBehaviour
         
         { 
             case State.WaitingToStart:
-                waitingToStartTimer -= Time.deltaTime;
-                if(waitingToStartTimer < 0f)
-                {
-                    state = State.CountingToStart;
-                    onStateChange?.Invoke(this, EventArgs.Empty);
-                }
+                
                 break;
             case State.CountingToStart:
                 countingToEndTimer -= Time.deltaTime;
@@ -68,7 +85,7 @@ public class GameHandler : MonoBehaviour
                 break;
 
         }
-        Debug.Log(state);
+       
         
         
     }
@@ -95,5 +112,23 @@ public class GameHandler : MonoBehaviour
        
         return 1 - (gameplayToStart / gameplayToStartMax);
 
+    }
+
+    public void PauseGame()
+    {
+        
+        isPaused = !isPaused;
+
+        if (isPaused)
+        {
+            Time.timeScale = 0f;
+            OnGamePaused?.Invoke(this, EventArgs.Empty);
+        }
+        else { 
+        Time.timeScale = 1f;
+            OnGameUnpaused?.Invoke(this, EventArgs.Empty); 
+        
+        }
+       
     }
 }

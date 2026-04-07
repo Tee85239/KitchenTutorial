@@ -4,6 +4,11 @@ using System;
 public class CuttingCounter : BaseCounter, IProgressBar
 {
     public static event EventHandler onAnyCut;
+   new public static void ResetStaticData()
+    {
+        onAnyCut = null;
+
+    }
     public event EventHandler<IProgressBar.OnProgressChangedEventArgs> onProgressChange;
   
 

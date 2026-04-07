@@ -6,6 +6,12 @@ public class TrashCounter : BaseCounter
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public static event EventHandler OnAnyObjectTrashed;
+
+    new public static void ResetStaticData()
+    {
+        OnAnyObjectTrashed = null;
+
+    }
     public override void Interact(Player player)
     {
         if (player.HasKitchenObject())
